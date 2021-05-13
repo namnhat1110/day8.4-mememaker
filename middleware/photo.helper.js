@@ -4,7 +4,7 @@ const resize = async (req, res, next) => {
     if (req.file) {
         try {
             const image = await Jimp.read(req.file.path);
-            await image.scaleToFit(600, 600).write(req.file.path);
+            await image.scaleToFit(1000, 1000).write(req.file.path);
             next();
         } catch (err) {
             next(err);
