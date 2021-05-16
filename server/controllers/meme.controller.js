@@ -9,9 +9,13 @@ const createMeme = async (req, res, next) => {
 
         const meme = {};
 
-        const texts = req.body.texts || [];
+        const texts = req.body.text || [];
+        // const texts = JSON.parse(req.body.text) || [];
+        console.log({ texts, hi: req.body.text })
         const textsArr = [].concat(texts); // Make sure texts is an array.
         meme.texts = textsArr.map((text) => JSON.parse(text));
+        // meme.texts = textsArr;
+        console.log({ meme: meme.texts })
 
         // Prepare data for the new meme
         meme.id = Date.now();
@@ -34,18 +38,21 @@ const createMeme = async (req, res, next) => {
         meme.updatedAt = Date.now();
         memes.unshift(meme);
         fs.writeFileSync("memes.json", JSON.stringify({ memes }));
-        res.status(201).json(meme);
+        res.status(201).json({ data: meme });
     } catch (err) {
         next(err);
     }
 };
 
 const getMemes = (req, res, next) => {
-    const page = parseInt(req.query.page) || 1;
-    const perPage = parseInt(req.query.perPage) || 10;
+    try {
+        let rawData = fs.readFileSync("memes.json");
+        let memes = JSON.parse(rawData).memes;
 
-    console.log({ page, perPage });
-    res.json({ page, perPage });
+        res.json({ data: memes })
+    } catch (error) {
+
+    }
 };
 
 module.exports = {
